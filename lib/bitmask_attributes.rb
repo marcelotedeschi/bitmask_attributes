@@ -38,7 +38,7 @@ module BitmaskAttributes
     def base_class_bitmask_definitions
       @bitmask_definitions ||= {}
 
-      if superclass != ActiveRecord::Base && method_defined?(inheritance_column)
+      if !is_base? && method_defined?(inheritance_column)
         @bitmask_definitions.reverse_merge! base_class.bitmask_definitions
       end
 
@@ -48,11 +48,15 @@ module BitmaskAttributes
     def base_class_bitmasks
       @bitmasks ||= {}
 
-      if superclass != ActiveRecord::Base && method_defined?(inheritance_column)
+      if !is_base? && method_defined?(inheritance_column)
         @bitmasks.reverse_merge! base_class.bitmasks
       end
 
       @bitmasks
+    end
+
+    def is_base?
+      superclass == ApplicationRecord || superclass == ActiveRecord::Base
     end
   end
 
